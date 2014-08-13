@@ -1,8 +1,6 @@
 一些Android脚本
 =======
 
-一些有用的Android脚本
-
 ####**1. app.py**
 实现功能
 1.　`app.py clear [packagename]` :清空app数据
