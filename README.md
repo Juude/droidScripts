@@ -2,11 +2,12 @@
 =======
 
 ####**1. app.py**
-实现功能
-1.　`app.py clear [packagename]` :清空app数据
-2.　`app.py details [packagename]` 跳转到app详情页面
-3.　`app.py dump [packagename]` 输出dump信息
-4.　`app.py list`[key] 查找安装的app
+**实现功能**
+
+1. `app.py clear [packagename]` :清空app数据
+2. `app.py details [packagename]` 跳转到app详情页面
+3. `app.py dump [packagename]` 输出dump信息
+4. `app.py list`[key] 查找安装的app
 
 ####**2.mock.py**`
 一个调试工具包,可以模拟程序运行的信息,或者在运行时候改变变量值，方便调试。
