@@ -9,7 +9,7 @@
 3. `app.py dump [packagename]` 输出dump信息
 4. `app.py list`[key] 查找安装的app
 
-####**2.mock.py**`
+####**2.mock.py**
 一个调试工具包,可以模拟程序运行的信息,或者在运行时候改变变量值，方便调试。
 使用前必须安装客户端,详细情况可以看这里的[文档](https://raw.githubusercontent.com/Juude/droidMock/master/README.md)
 
