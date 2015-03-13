@@ -1,4 +1,4 @@
-一些Android脚本
+Android开发脚本
 =======
 
 ####**1. app.py**
@@ -24,4 +24,4 @@
 
 ####**5.window**
 获取正在运行的window list
-![](art/window.png)
+![](art/windows.png)
