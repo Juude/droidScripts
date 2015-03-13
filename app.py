@@ -24,6 +24,10 @@ def dump(args):
     package = args[0]
     command("adb shell dumpsys package %s" % package)
 
+def uninstall(args):
+    package = args[0]
+    command("adb shell pm uninstall %s" % package)
+
 def main():
     action = sys.argv[1]
     args = sys.argv[2:]

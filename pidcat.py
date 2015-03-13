@@ -39,6 +39,8 @@ parser.add_argument('-s', '--serial', dest='device_serial', help='Device serial 
 parser.add_argument('-d', '--device', dest='use_device', action='store_true', help='Use first device for log input (adb -d option).')
 parser.add_argument('-e', '--emulator', dest='use_emulator', action='store_true', help='Use first emulator for log input (adb -e option).')
 parser.add_argument('-c', '--clear', dest='clear_logcat', action='store_true', help='Clear the entire log before running.')
+parser.add_argument('-t', '--tag', dest='tag', action='append', help='Filter output by specified tag(s)')
+parser.add_argument('-i', '--ignore-tag', dest='ignored_tag', action='append', help='Filter output by ignoring specified tag(s)')
 
 args = parser.parse_args()
 min_level = LOG_LEVELS_MAP[args.min_level.upper()]
@@ -138,7 +140,8 @@ TAGTYPES = {
   'F': colorize(' F ', fg=BLACK, bg=RED),
 }
 
-PID_START = re.compile(r'^Start proc ([a-zA-Z0-9._:]+) for ([a-z]+ [^:]+): pid=(\d+) uid=(\d+) gids=(.*)$')
+PID_START = re.compile(r'^.*: Start proc ([a-zA-Z0-9._:]+) for ([a-z]+ [^:]+): pid=(\d+) uid=(\d+) gids=(.*)$')
+PID_START_DALVIK = re.compile(r'^E/dalvikvm\(\s*(\d+)\): >>>>> ([a-zA-Z0-9._:]+) \[ userId:0 \| appId:(\d+) \]$')
 PID_KILL  = re.compile(r'^Killing (\d+):([a-zA-Z0-9._:]+)/[^:]+: (.*)$')
 PID_LEAVE = re.compile(r'^No longer want ([a-zA-Z0-9._:]+) \(pid (\d+)\): .*$')
 PID_DEATH = re.compile(r'^Process ([a-zA-Z0-9._:]+) \(pid (\d+)\) has died.?$')
@@ -210,6 +213,17 @@ def parse_death(tag, message):
       return pid, package_line
   return None, None
 
+def parse_start_proc(line):
+  start = PID_START.match(line)
+  if start is not None:
+    line_package, target, line_pid, line_uid, line_gids = start.groups()
+    return line_package, target, line_pid, line_uid, line_gids
+  start = PID_START_DALVIK.match(line)
+  if start is not None:
+    line_pid, line_package, line_uid = start.groups()
+    return line_package, '', line_pid, line_uid, ''
+  return None
+
 while adb.poll() is None:
   try:
     line = adb.stdout.readline().decode('utf-8', 'replace').strip()
@@ -227,11 +241,9 @@ while adb.poll() is None:
     continue
 
   level, tag, owner, message = log_line.groups()
-
-  start = PID_START.match(message)
-  if start is not None:
-    line_package, target, line_pid, line_uid, line_gids = start.groups()
-
+  start = parse_start_proc(line)
+  if start:
+    line_package, target, line_pid, line_uid, line_gids = start
     if match_packages(line_package):
       pids.add(line_pid)
 
@@ -266,6 +278,10 @@ while adb.poll() is None:
   if owner not in pids:
     continue
   if level in LOG_LEVELS_MAP and LOG_LEVELS_MAP[level] < min_level:
+    continue
+  if args.ignored_tag and tag.strip() in args.ignored_tag:
+    continue
+  if args.tag and tag.strip() not in args.tag:
     continue
 
   linebuf = ''
