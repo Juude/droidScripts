@@ -28,6 +28,9 @@ def uninstall(args):
     package = args[0]
     command("adb shell pm uninstall %s" % package)
 
+def hierarchy(args):
+    command("adb shell dumpsys activity top ")
+
 def main():
     action = sys.argv[1]
     args = sys.argv[2:]
