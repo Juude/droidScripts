@@ -25,3 +25,6 @@ Android开发脚本
 ####**5.window**
 获取正在运行的window list
 ![](art/windows.png)
+
+####**6.mem.py**
+获取指定应用占用的内存
