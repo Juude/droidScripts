@@ -10,3 +10,7 @@ if action == "fatal":
     os.system("adb logcat -s AndroidRuntime:*")
 elif action == "kids":
     os.system("adb logcat -s AndroidRuntime:* MyInvitationsFragment:* PTAPI:* UnreadMessagesManager:* ProductDetailsFragment:* GridGallery:* UiHelper:* FullPTDraweeView:* ")
+else:
+    command = "adb logcat -s %s:*" % action
+    print command
+    os.system(command)
