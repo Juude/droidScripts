@@ -57,7 +57,7 @@ def _find_only_stetho_socket(device):
     if len(process_names) > 1:
       raise HumanReadableError(
           'Multiple stetho-enabled processes available:%s\n' % (
-              '\n\t'.join([''] + process_names)) +
+              '\n\t'.join([''] + list(set(process_names)))) +
           'Use -p <process> or the environment variable STETHO_PROCESS to ' +
           'select one')
     elif last_stetho_socket_name == None:
